@@ -1,41 +1,53 @@
 /* Design Tokens & CSS Variables */
 :root {
-  /* Colors */
-  --bg-primary: #0b0f19;
-  --bg-secondary: #111827;
-  --bg-card: rgba(22, 28, 45, 0.6);
-  --border-color: rgba(255, 255, 255, 0.08);
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  /* Colors - Light Theme Edition */
+  --bg-primary: #f3f4f6;
+  /* Gris très clair et doux */
+  --bg-secondary: #ffffff;
+  /* Blanc pur pour contraster */
+  --bg-card: rgba(255, 255, 255, 0.7);
+  /* Verre blanc translucide */
+  --border-color: rgba(0, 0, 0, 0.06);
+  /* Bordure ultra-fine et discrète */
 
-  /* Accents */
-  --color-primary: #8b5cf6;       /* Violet */
-  --color-primary-glow: rgba(139, 92, 246, 0.15);
-  --color-secondary: #ec4899;     /* Pink */
-  --color-secondary-glow: rgba(236, 72, 153, 0.15);
-  
-  --color-success: #10b981;       /* Emerald Green */
-  --color-success-glow: rgba(16, 185, 129, 0.15);
-  --color-danger: #ef4444;        /* Crimson Red */
-  --color-danger-glow: rgba(239, 68, 68, 0.15);
-  --color-warning: #f59e0b;       /* Amber Yellow */
-  --color-warning-glow: rgba(245, 158, 11, 0.15);
+  --text-primary: #1f2937;
+  /* Gris charbon (évite le noir pur pour le confort) */
+  --text-secondary: #4b5563;
+  /* Gris moyen pour les sous-titres */
+  --text-muted: #9ca3af;
+  /* Gris clair pour les éléments secondaires */
 
-  /* Glassmorphism & Effects */
-  --backdrop-blur: blur(12px);
-  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(255, 255, 255, 0.05) inset;
+  /* Accents - Desaturés pour un rendu doux sur fond clair */
+  --color-primary: #7c3aed;
+  /* Violet vif et moderne */
+  --color-primary-glow: rgba(124, 58, 237, 0.08);
+  --color-secondary: #db2777;
+  /* Rose magenta */
+  --color-secondary-glow: rgba(219, 39, 119, 0.08);
+
+  --color-success: #059669;
+  /* Vert émeraude */
+  --color-success-glow: rgba(5, 150, 105, 0.08);
+  --color-danger: #dc2626;
+  /* Rouge cerise */
+  --color-danger-glow: rgba(220, 38, 38, 0.08);
+  --color-warning: #d97706;
+  /* Jaune ambré */
+  --color-warning-glow: rgba(217, 119, 6, 0.08);
+
+  /* Glassmorphism & Effects - Ajustés pour le fond clair */
+  --backdrop-blur: blur(16px);
+  --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(255, 255, 255, 0.8) inset;
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
-  
+
   /* Typography */
   --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base resets & dark mode styling */
+/* Base resets & light mode styling */
 * {
   box-sizing: border-box;
   margin: 0;
