@@ -85,4 +85,90 @@ router.post('/add', async (req, res) => {
     }
 });
 
+// Route DELETE : Retirer un numéro de la whitelist et enregistrer l'action
+router.delete('/remove', async (req, res) => {
+    const { phoneNumber, performedBy, details } = req.body;
+
+    // 1. Validation de base
+    if (!phoneNumber) {
+        return res.status(400).json({
+            success: false,
+            message: "Le numéro de téléphone est obligatoire."
+        });
+    }
+
+    const cleanedPhone = phoneNumber.trim();
+    const user = performedBy || 'system';
+    const logDetails = details || 'Suppression unitaire manuelle';
+
+    let transaction;
+    try {
+        // Récupération du pool de connexion existant
+        const pool = await poolPromise;
+
+        transaction = new sql.Transaction(pool);
+        await transaction.begin();
+
+        // Étape A : Vérifier si le numéro existe bien dans la Whitelist
+        const checkRequest = new sql.Request(transaction);
+        checkRequest.input('phone', sql.NVarChar(20), cleanedPhone);
+
+        const checkResult = await checkRequest.query(
+            'SELECT TOP 1 id FROM Whitelist WHERE phone_number = @phone'
+        );
+
+        if (checkResult.recordset.length === 0) {
+            // Le numéro n'existe pas, inutile d'aller plus loin
+            await transaction.rollback();
+            return res.status(404).json({
+                success: false,
+                message: `Le numéro ${cleanedPhone} n'existe pas dans la whitelist.`
+            });
+        }
+
+        // Étape B : Supprimer le numéro de la Whitelist
+        const deleteRequest = new sql.Request(transaction);
+        deleteRequest.input('phone', sql.NVarChar(20), cleanedPhone);
+        await deleteRequest.query(
+            'DELETE FROM Whitelist WHERE phone_number = @phone'
+        );
+
+        // Étape C : Enregistrer la suppression dans l'Audit
+        const auditRequest = new sql.Request(transaction);
+        auditRequest.input('action', sql.NVarChar(50), 'DELETE');
+        auditRequest.input('phone', sql.NVarChar(20), cleanedPhone);
+        auditRequest.input('user', sql.NVarChar(100), user);
+        auditRequest.input('details', sql.NVarChar(sql.MAX), logDetails);
+
+        await auditRequest.query(
+            `INSERT INTO AuditLogs (action_type, phone_number, performed_by, details) 
+             VALUES (@action, @phone, @user, @details)`
+        );
+
+        // Validation de la transaction
+        await transaction.commit();
+
+        return res.status(200).json({
+            success: true,
+            message: `Le numéro ${cleanedPhone} a été retiré de la whitelist et l'action a été loggée.`
+        });
+
+    } catch (error) {
+        // En cas d'erreur de base de données, annulation complète
+        if (transaction) {
+            try {
+                await transaction.rollback();
+            } catch (rollbackError) {
+                console.error("Erreur lors du rollback :", rollbackError);
+            }
+        }
+
+        console.error("Erreur lors de la suppression du numéro :", error);
+        return res.status(500).json({
+            success: false,
+            message: "Une erreur interne est survenue lors de la suppression."
+        });
+    }
+});
+
 module.exports = router;
