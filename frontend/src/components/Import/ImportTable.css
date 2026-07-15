@@ -101,7 +101,8 @@
 }
 
 /* Cell Styles */
-.file-cell, .date-cell {
+.file-cell,
+.date-cell {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -224,4 +225,25 @@
 .empty-desc {
   font-size: 0.8rem;
   max-width: 300px;
+}
+
+/* Ligne de séparation */
+.section-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), var(--border-color, #dee2e6), rgba(255, 255, 255, 0));
+  margin: 40px 0;
+}
+
+.forms-section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary, #212529);
+  margin: 0;
 }

@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { FileSpreadsheet, Search, CheckCircle, XCircle, AlertCircle, Calendar } from 'lucide-react';
+import ActionForms from '../ActionForms'; // Ajuste le chemin si nécessaire !
 import './ImportTable.css';
 
-/**
- * Table component displaying the CSV import history with search filter.
- */
-export default function ImportTable({ imports }) {
+// ⚠️ BIEN METTRE { imports, onRefresh } ICI AVEC LES ACCOLEDES ⚠️
+export default function ImportTable({ imports, onRefresh }) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Format date to readable string
   const formatDate = (dateString) => {
     if (!dateString) return 'Unknown Date';
     const date = new Date(dateString);
@@ -21,7 +19,6 @@ export default function ImportTable({ imports }) {
     });
   };
 
-  // Filter list according to search query[cite: 6]
   const filteredImports = imports.filter((item) => {
     const filenameMatch = item.filename?.toLowerCase().includes(searchQuery.toLowerCase());
     const userMatch = item.imported_by?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -31,7 +28,7 @@ export default function ImportTable({ imports }) {
 
   return (
     <div className="table-container">
-      {/* Toolbar with Search Input[cite: 6] */}
+      {/* Barre de recherche */}
       <div className="table-toolbar">
         <div className="search-box">
           <Search className="search-icon" />
@@ -47,7 +44,7 @@ export default function ImportTable({ imports }) {
         </div>
       </div>
 
-      {/* Glassmorphic Table[cite: 6] */}
+      {/* Tableau */}
       <div className="glass-table-wrapper">
         <table className="glass-table">
           <thead>
@@ -122,6 +119,14 @@ export default function ImportTable({ imports }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      <hr className="section-divider" />
+
+      <div className="forms-section-container">
+        <h2 className="section-title">Whitelist Quick Actions</h2>
+        {/* On passe onRefresh ici */}
+        <ActionForms onActionSuccess={onRefresh} />
       </div>
     </div>
   );

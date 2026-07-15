@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { History, FileSpreadsheet, AlertCircle, CheckCircle, RefreshCw, Database, ShieldCheck } from 'lucide-react';
-import whitelistApi from './api/whitelistApi';
+import whitelistApi from './api/whitelistApi'; // Vérifie bien si c'est './services/WhitelistApi' ou './api/whitelistApi' selon ton projet !
 import Layout from './components/Layout/Layout';
 import ImportTable from './components/Import/ImportTable';
 import WhitelistTable from './components/Whitelist/WhitelistTable';
@@ -14,16 +14,19 @@ export default function App() {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Main function to load all dashboard data
+  // Fonction principale pour charger et sécuriser les données
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(null);
     try {
       const importsResult = await whitelistApi.getImportHistory();
-      setImports(importsResult.data || []);
+      // Sécurité : On accepte si l'API renvoie { data: [...] } OU directement le tableau [...]
+      const importsData = Array.isArray(importsResult) ? importsResult : (importsResult?.data || []);
+      setImports(importsData);
 
       const whitelistResult = await whitelistApi.getWhitelist();
-      setWhitelist(whitelistResult.data || []);
+      const whitelistData = Array.isArray(whitelistResult) ? whitelistResult : (whitelistResult?.data || []);
+      setWhitelist(whitelistData);
     } catch (err) {
       setError(err.message || "Unable to fetch data from the server. Please check that the backend server is running.");
     } finally {
@@ -31,28 +34,21 @@ export default function App() {
     }
   };
 
-  // Refresh without triggering the global loading shimmer effect
+  // Rafraîchissement en arrière-plan (sans l'effet Shimmer global)
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
       const importsResult = await whitelistApi.getImportHistory();
-      setImports(importsResult.data || []);
+      const importsData = Array.isArray(importsResult) ? importsResult : (importsResult?.data || []);
+      setImports(importsData);
 
       const whitelistResult = await whitelistApi.getWhitelist();
-      setWhitelist(whitelistResult.data || []);
-    } catch (err) {
-      console.error("Refresh error:", err);
+      const whitelistData = Array.isArray(whitelistResult) ? whitelistResult : (whitelistResult?.data || []);
+      setWhitelist(whitelistData);
+    } catch (error) {
+      console.error("Refresh error:", error);
     } finally {
       setRefreshing(false);
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      const data = await whitelistApi.getWhitelist();
-      setWhitelist(data.data || []);
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -60,24 +56,27 @@ export default function App() {
     fetchDashboardData();
   }, []);
 
-  // KPI statistics calculations
-  const totalImports = imports.length;
-  const successImports = imports.filter(i => i.status === 'completed').length;
-  const failedImports = imports.filter(i => i.status === 'failed').length;
+  // Protection anti-crash pour les calculs (au cas où les variables ne seraient pas des tableaux)
+  const safeImports = Array.isArray(imports) ? imports : [];
+  const safeWhitelist = Array.isArray(whitelist) ? whitelist : [];
+
+  // Statistiques KPI
+  const totalImports = safeImports.length;
+  const successImports = safeImports.filter(i => i && i.status === 'completed').length;
+  const failedImports = safeImports.filter(i => i && i.status === 'failed').length;
   const successRate = totalImports > 0 ? Math.round((successImports / totalImports) * 100) : 100;
 
-  // Total sum of valid numbers inserted
-  const totalImportedNumbers = imports
-    .filter(i => i.status === 'completed')
+  const totalImportedNumbers = safeImports
+    .filter(i => i && i.status === 'completed')
     .reduce((sum, item) => sum + (item.records_count || 0), 0);
 
-  const totalWhitelisted = whitelist.length;
-  const latestAddedPhone = whitelist.length > 0 ? whitelist[0].phone_number : 'None';
+  const totalWhitelisted = safeWhitelist.length;
+  const latestAddedPhone = safeWhitelist.length > 0 ? safeWhitelist[0].phone_number : 'None';
 
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
       {loading ? (
-        /* Premium loading skeleton (Shimmer) */
+        /* Shimmer Loading Effect */
         <div className="dashboard-loading">
           <div className="shimmer-grid">
             <div className="shimmer-card"></div>
@@ -87,7 +86,7 @@ export default function App() {
           <div className="shimmer-table"></div>
         </div>
       ) : error ? (
-        /* Styled error alert */
+        /* Error view */
         <div className="dashboard-error">
           <div className="error-card">
             <AlertCircle className="error-icon" />
@@ -100,12 +99,12 @@ export default function App() {
           </div>
         </div>
       ) : (
-        /* Loaded dashboard content */
+        /* Content view */
         <div className="dashboard-view animate-fade-in">
-          {/* Import History Section */}
+
+          {/* Section Historique des importations */}
           {activeTab === 'imports' && (
             <div className="tab-pane">
-              {/* Section title and refresh button */}
               <div className="section-header">
                 <h2>Previous Uploads</h2>
                 <button
@@ -118,15 +117,14 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Main history table */}
-              <ImportTable imports={imports} />
+              {/* On passe handleRefresh en tant que onRefresh pour que les formulaires du bas actualisent la table */}
+              <ImportTable imports={safeImports} onRefresh={handleRefresh} />
             </div>
           )}
 
-          {/* Whitelist Section */}
+          {/* Section Liste de numéros (Search & Delete) */}
           {activeTab === 'whitelist' && (
             <div className="tab-pane">
-              {/* Section title and refresh button */}
               <div className="section-header">
                 <h2>Search & Delete Number</h2>
                 <button
@@ -139,8 +137,8 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Main numbers table */}
-              <WhitelistTable list={whitelist} onRefresh={loadData} />
+              {/* Utilisation de handleRefresh pour mettre automatiquement à jour après suppression */}
+              <WhitelistTable list={safeWhitelist} onRefresh={handleRefresh} />
             </div>
           )}
         </div>
