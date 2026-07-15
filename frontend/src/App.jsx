@@ -107,7 +107,7 @@ export default function App() {
             <div className="tab-pane">
               {/* Section title and refresh button */}
               <div className="section-header">
-                <h2>Import Reports</h2>
+                <h2>Previous Uploads</h2>
                 <button
                   className={`refresh-button ${refreshing ? 'refreshing' : ''}`}
                   onClick={handleRefresh}
