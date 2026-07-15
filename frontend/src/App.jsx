@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { History, FileSpreadsheet, AlertCircle, CheckCircle, RefreshCw, Database, ShieldCheck } from 'lucide-react';
 import whitelistApi from './api/whitelistApi';
 import Layout from './components/Layout/Layout';
-import StatsCard from './components/UI/StatsCard';
 import ImportTable from './components/Import/ImportTable';
 import WhitelistTable from './components/Whitelist/WhitelistTable';
 import './App.css';
@@ -15,7 +14,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fonction principale de chargement de toutes les données du dashboard
+  // Main function to load all dashboard data
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(null);
@@ -26,13 +25,13 @@ export default function App() {
       const whitelistResult = await whitelistApi.getWhitelist();
       setWhitelist(whitelistResult.data || []);
     } catch (err) {
-      setError(err.message || "Impossible de récupérer les données du serveur. Veuillez vérifier que le serveur backend est démarré.");
+      setError(err.message || "Unable to fetch data from the server. Please check that the backend server is running.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Rafraîchir sans relancer l'effet shimmer de chargement global
+  // Refresh without triggering the global loading shimmer effect
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
@@ -42,7 +41,7 @@ export default function App() {
       const whitelistResult = await whitelistApi.getWhitelist();
       setWhitelist(whitelistResult.data || []);
     } catch (err) {
-      console.error("Erreur de rafraîchissement :", err);
+      console.error("Refresh error:", err);
     } finally {
       setRefreshing(false);
     }
@@ -50,8 +49,8 @@ export default function App() {
 
   const loadData = async () => {
     try {
-      const data = await WhitelistApi.getWhitelist();
-      setWhitelist(data);
+      const data = await whitelistApi.getWhitelist();
+      setWhitelist(data.data || []);
     } catch (err) {
       console.error(err);
     }
@@ -61,24 +60,24 @@ export default function App() {
     fetchDashboardData();
   }, []);
 
-  // Calculs statistiques pour les KPI
+  // KPI statistics calculations
   const totalImports = imports.length;
   const successImports = imports.filter(i => i.status === 'completed').length;
   const failedImports = imports.filter(i => i.status === 'failed').length;
   const successRate = totalImports > 0 ? Math.round((successImports / totalImports) * 100) : 100;
-  
-  // Somme totale de numéros valides insérés
+
+  // Total sum of valid numbers inserted
   const totalImportedNumbers = imports
     .filter(i => i.status === 'completed')
     .reduce((sum, item) => sum + (item.records_count || 0), 0);
 
   const totalWhitelisted = whitelist.length;
-  const latestAddedPhone = whitelist.length > 0 ? whitelist[0].phone_number : 'Aucun';
+  const latestAddedPhone = whitelist.length > 0 ? whitelist[0].phone_number : 'None';
 
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
       {loading ? (
-        /* Squelette de chargement premium (Shimmer) */
+        /* Premium loading skeleton (Shimmer) */
         <div className="dashboard-loading">
           <div className="shimmer-grid">
             <div className="shimmer-card"></div>
@@ -88,59 +87,59 @@ export default function App() {
           <div className="shimmer-table"></div>
         </div>
       ) : error ? (
-        /* Alerte d'erreur stylisée */
+        /* Styled error alert */
         <div className="dashboard-error">
           <div className="error-card">
             <AlertCircle className="error-icon" />
-            <h3>Erreur de Connexion</h3>
+            <h3>Connection Error</h3>
             <p>{error}</p>
             <button className="retry-button" onClick={fetchDashboardData}>
               <RefreshCw className="btn-icon" />
-              Réessayer
+              Retry
             </button>
           </div>
         </div>
       ) : (
-        /* Contenu du Dashboard chargé */
+        /* Loaded dashboard content */
         <div className="dashboard-view animate-fade-in">
-          {/* Section Historique des Imports */}
+          {/* Import History Section */}
           {activeTab === 'imports' && (
             <div className="tab-pane">
-              {/* Titre de section et bouton de rafraîchissement */}
+              {/* Section title and refresh button */}
               <div className="section-header">
-                <h2>Rapports d'Importations</h2>
-                <button 
-                  className={`refresh-button ${refreshing ? 'refreshing' : ''}`} 
+                <h2>Import Reports</h2>
+                <button
+                  className={`refresh-button ${refreshing ? 'refreshing' : ''}`}
                   onClick={handleRefresh}
                   disabled={refreshing}
                 >
                   <RefreshCw className={`refresh-icon ${refreshing ? 'spin' : ''}`} />
-                  <span>{refreshing ? 'Actualisation...' : 'Actualiser'}</span>
+                  <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
                 </button>
               </div>
 
-              {/* Tableau principal d'historique */}
+              {/* Main history table */}
               <ImportTable imports={imports} />
             </div>
           )}
 
-          {/* Section Liste de la Whitelist */}
+          {/* Whitelist Section */}
           {activeTab === 'whitelist' && (
             <div className="tab-pane">
-              {/* Titre de section et bouton de rafraîchissement */}
+              {/* Section title and refresh button */}
               <div className="section-header">
-                <h2>Numéros Autorisés</h2>
-                <button 
-                  className={`refresh-button ${refreshing ? 'refreshing' : ''}`} 
+                <h2>Search & Delete Number</h2>
+                <button
+                  className={`refresh-button ${refreshing ? 'refreshing' : ''}`}
                   onClick={handleRefresh}
                   disabled={refreshing}
                 >
                   <RefreshCw className={`refresh-icon ${refreshing ? 'spin' : ''}`} />
-                  <span>{refreshing ? 'Actualisation...' : 'Actualiser'}</span>
+                  <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
                 </button>
               </div>
 
-              {/* Tableau principal des numéros */}
+              {/* Main numbers table */}
               <WhitelistTable list={whitelist} onRefresh={loadData} />
             </div>
           )}

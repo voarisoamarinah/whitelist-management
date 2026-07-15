@@ -1,0 +1,344 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Toolbar styling */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 480px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-box input {
+  width: 100%;
+  height: 44px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0 16px 0 46px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+.search-box input:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  background-color: rgba(22, 28, 45, 0.8);
+}
+
+.results-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Glass Table Wrapper */
+.glass-table-wrapper {
+  background-color: var(--bg-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-premium);
+  overflow: hidden;
+}
+
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.glass-table th {
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.glass-table td {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.table-row {
+  transition: var(--transition-smooth);
+}
+
+.table-row:hover {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.table-row:last-child td {
+  border-bottom: none;
+}
+
+/* Cell Styles */
+.phone-cell, .date-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phone-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary);
+}
+
+.calendar-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.col-phone span {
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge .status-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.status-badge.success {
+  background-color: var(--color-success-glow);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Empty State */
+.empty-table-cell {
+  padding: 60px 0 !important;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  color: rgba(255, 255, 255, 0.05);
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.empty-desc {
+  font-size: 0.8rem;
+  max-width: 300px;
+}
+
+/* Alignement et en-tête de l'action */
+.col-action-header {
+  text-align: right !important;
+}
+
+.col-action {
+  text-align: right;
+}
+
+/* Bouton supprimer dans la table */
+.delete-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-index;
+}
+
+.delete-action-btn:hover {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.trash-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Pop-up de confirmation (Modal Overlay) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Effet d'arrière-plan assombri */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* Léger flou de l'arrière plan */
+}
+
+/* Contenu de la pop-up */
+.modal-content {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dee2e6;
+}
+
+.modal-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #343a40;
+  font-size: 1.2rem;
+}
+
+.modal-body {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Alerte d'erreur dans la modal */
+.modal-error-alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  border: 1px solid #f5c6cb;
+}
+
+/* Boutons d'action de la modal */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-btn-cancel {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.modal-btn-cancel:hover:not(:disabled) {
+  background-color: #cbd5e1;
+}
+
+.modal-btn-confirm {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.modal-btn-confirm:hover:not(:disabled) {
+  background-color: #bd2130;
+}
+
+/* Désactivation des boutons pendant la suppression */
+.modal-btn-cancel:disabled,
+.modal-btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Bannière d'alerte de succès temporaire */
+.alert-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 14px 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.alert-success-icon {
+  width: 20px;
+  height: 20px;
+  color: #28a745;
+}
+
+/* Animation d'apparition fluide */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
