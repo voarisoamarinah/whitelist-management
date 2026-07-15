@@ -61,6 +61,20 @@ class WhitelistRepository {
         const result = await request.query('SELECT phone_number FROM Whitelist');
         return result.recordset.map(row => row.phone_number.trim());
     }
+
+    /**
+     * Récupère tous les enregistrements de la table Whitelist, triés par date de création (du plus récent au plus ancien).
+     * 
+     * @returns {Promise<object[]>} Liste complète des enregistrements de la whitelist.
+     */
+    async findAll() {
+        const pool = await poolPromise;
+        const request = new sql.Request(pool);
+        const result = await request.query(
+            'SELECT id, phone_number, status, created_at FROM Whitelist ORDER BY created_at DESC'
+        );
+        return result.recordset;
+    }
 }
 
 module.exports = new WhitelistRepository();

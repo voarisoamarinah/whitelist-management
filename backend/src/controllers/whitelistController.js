@@ -95,6 +95,25 @@ class WhitelistController {
             });
         }
     }
+
+    /**
+     * Gère la requête GET pour récupérer tous les numéros de la whitelist.
+     */
+    async getWhitelist(req, res) {
+        try {
+            const result = await whitelistService.getWhitelist();
+            return res.status(result.status).json({
+                success: result.success,
+                data: result.data
+            });
+        } catch (error) {
+            console.error("Erreur lors de la récupération de la whitelist :", error);
+            return res.status(500).json({
+                success: false,
+                message: "Une erreur interne est survenue lors de la récupération de la whitelist."
+            });
+        }
+    }
 }
 
 // L'utilisation d'une seule instance du contrôleur simplifie son exportation/importation

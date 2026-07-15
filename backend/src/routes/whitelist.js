@@ -15,4 +15,7 @@ router.post('/import', upload.single('file'), whitelistController.importCsv);
 // Route GET : Obtenir l'historique des importations de fichiers CSV
 router.get('/imports', whitelistController.getImportHistory);
 
+// Route GET : Obtenir la liste de tous les numéros de la whitelist
+router.get('/list', whitelistController.getWhitelist);
+
 module.exports = router;

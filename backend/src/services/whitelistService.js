@@ -313,6 +313,20 @@ class WhitelistService {
             data
         };
     }
+
+    /**
+     * Récupère la liste de tous les numéros de la whitelist.
+     * 
+     * @returns {Promise<object>} Le résultat avec le statut et la liste des numéros { success, status, data }.
+     */
+    async getWhitelist() {
+        const data = await whitelistRepository.findAll();
+        return {
+            success: true,
+            status: 200,
+            data
+        };
+    }
 }
 
 module.exports = new WhitelistService();
