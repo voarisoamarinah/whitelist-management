@@ -1,5 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+
+// Configure CORS pour autoriser uniquement ton frontend
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware pour parser le JSON du body des requêtes
 app.use(express.json());
