@@ -299,6 +299,20 @@ class WhitelistService {
             throw error;
         }
     }
+
+    /**
+     * Récupère l'historique de toutes les importations.
+     * 
+     * @returns {Promise<object>} Le résultat avec le statut et la liste historique { success, status, data }.
+     */
+    async getImportHistory() {
+        const data = await importHistoryRepository.findAll();
+        return {
+            success: true,
+            status: 200,
+            data
+        };
+    }
 }
 
 module.exports = new WhitelistService();

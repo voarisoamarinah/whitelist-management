@@ -70,6 +70,22 @@ class ImportHistoryRepository {
             WHERE id = @id
         `);
     }
+
+    /**
+     * Récupère tout l'historique des importations, trié du plus récent au plus ancien.
+     * 
+     * @returns {Promise<object[]>} Liste des enregistrements d'importation.
+     */
+    async findAll() {
+        const pool = await poolPromise;
+        const request = new sql.Request(pool);
+        const result = await request.query(`
+            SELECT id, filename, service_no, imported_by, imported_at, status, records_count
+            FROM ImportHistory
+            ORDER BY imported_at DESC
+        `);
+        return result.recordset;
+    }
 }
 
 module.exports = new ImportHistoryRepository();

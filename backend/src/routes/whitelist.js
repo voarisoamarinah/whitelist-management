@@ -12,4 +12,7 @@ router.delete('/remove', whitelistController.remove);
 // Route POST : Importer un fichier CSV de numéros (Validation stricte "Tout ou Rien")
 router.post('/import', upload.single('file'), whitelistController.importCsv);
 
+// Route GET : Obtenir l'historique des importations de fichiers CSV
+router.get('/imports', whitelistController.getImportHistory);
+
 module.exports = router;
